@@ -55,6 +55,11 @@ public:
     Control* getControl(Node* node, long index) const;
 
     /*
+     *  Returns the subscene for the given node or NULL.
+     */
+    ViewportScene* getSubscene(GraphNode* n) const;
+
+    /*
      *  If a render worker exists for the given node and datum,
      *  trigger a re-render check (used when connections are made
      *  and broken).

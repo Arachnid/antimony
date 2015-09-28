@@ -37,7 +37,7 @@ public:
     Graph* getGraph() const { return root; }
 
     GraphScene* getGraphScene() const { return graph_scene; }
-    ViewportScene* getViewScene() const { return view_scene; }
+    ViewportScene* getViewScene(Graph* g) const;
 
     /*
      *  Returns a window title in the form

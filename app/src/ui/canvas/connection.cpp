@@ -21,7 +21,7 @@ Connection::Connection(OutputPort* source)
     // easiest way to trigger re-rendering when connections change.
     auto d = source->getDatum();
     auto n = d->parentNode();
-    auto vs = App::instance()->getViewScene();
+    auto vs = App::instance()->getViewScene(n->parentGraph());
     connect(this, &Connection::changed, [=](){ vs->checkRender(n, d); });
 
     connect(this, &QObject::destroyed, this, &Connection::changed);

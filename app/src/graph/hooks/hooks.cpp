@@ -131,7 +131,7 @@ void AppHooks::loadScriptHooks(PyObject* g, ScriptNode* n)
     scene->clearExportWorker(n);
 
     auto ui_ref = extract<ScriptUIHooks*>(ui_obj)();
-    ui_ref->scene = App::instance()->getViewScene();
+    ui_ref->scene = App::instance()->getViewScene(n->parentGraph());
     ui_ref->node = n;
 
     PyObject* sb = PyObject_CallFunctionObjArgs(

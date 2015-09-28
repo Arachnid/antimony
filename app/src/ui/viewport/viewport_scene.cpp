@@ -42,6 +42,11 @@ Control* ViewportScene::getControl(Node* n, long index) const
     return controls[n]->get(index);
 }
 
+ViewportScene* ViewportScene::getSubscene(GraphNode* n) const
+{
+    return subgraphs[n].data();
+}
+
 Viewport* ViewportScene::newViewport()
 {
     auto s = new QGraphicsScene;

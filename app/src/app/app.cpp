@@ -35,6 +35,7 @@
 
 #include "graph/graph.h"
 #include "graph/node.h"
+#include "graph/graph_node.h"
 #include "graph/datum.h"
 
 #include "fab/types/shape.h"
@@ -304,6 +305,18 @@ bool App::event(QEvent *event)
         default:
             return QApplication::event(event);
     }
+}
+
+ViewportScene* App::getViewScene(Graph* g) const
+{
+    if (g->parentNode() == NULL)
+        return view_scene;
+
+    auto vs = getViewScene(g->parentNode()->parentGraph());
+    auto vs_ = vs->getSubscene(static_cast<GraphNode*>(g->parentNode()));
+
+    Q_ASSERT(vs_ != NULL);
+    return vs_;
 }
 
 QString App::getWindowTitle() const
