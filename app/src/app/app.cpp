@@ -313,7 +313,7 @@ ViewportScene* App::getViewScene(Graph* g) const
         return view_scene;
 
     auto vs = getViewScene(g->parentNode()->parentGraph());
-    auto vs_ = vs->getSubscene(static_cast<GraphNode*>(g->parentNode()));
+    auto vs_ = vs->getSubscene(g->parentNode());
 
     Q_ASSERT(vs_ != NULL);
     return vs_;

@@ -45,7 +45,7 @@ public:
     /*
      *  Returns the parent node or NULL if this is a top-level graph.
      */
-    Node* parentNode() const { return parent; }
+    GraphNode* parentNode() const { return parent; }
 
     /*
      *  Uninstall the given node.
