@@ -16,6 +16,7 @@ class Viewport;
 
 class Datum;
 class Node;
+class GraphNode;
 class Graph;
 
 class ViewportScene : public QObject, public GraphWatcher
@@ -90,7 +91,8 @@ protected:
     /* Store a set of top-level control roots
      * (which manage UI hooks, render workers, highlighting, glowing)
      */
-    QMap<Node*, QSharedPointer<ControlRoot>> controls;
+    QHash<Node*, QSharedPointer<ControlRoot>> controls;
+    QHash<GraphNode*, QSharedPointer<ViewportScene>> subgraphs;
 
     friend class ControlRoot;
 };

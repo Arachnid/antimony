@@ -2,9 +2,11 @@
 
 #include "ui/viewport/viewport_scene.h"
 #include "ui/viewport/viewport.h"
+#include "ui/util/scene.h"
 #include "render/render_worker.h"
 
 #include "graph/node.h"
+#include "graph/graph_node.h"
 #include "graph/datum.h"
 #include "graph/graph.h"
 
@@ -56,19 +58,26 @@ Viewport* ViewportScene::newViewport()
 
 void ViewportScene::trigger(const GraphState& state)
 {
+    // Store nodes in a Set for O(1) checking
+    QSet<Node*> nodes;
     for (auto n : state.nodes)
+    {
+        nodes.insert(n);
         // If this node is one that we don't have a ControlRoot for,
         // create one (except in the special case when loading is set,
         // which indicates that we're loading the scene)
         if (!loading && !controls.contains(n))
-            controls[n].reset(new ControlRoot(n, this));
+            controls[n].reset(new ControlRoot(n, this),
+                              &QObject::deleteLater);
 
-    auto itr = controls.begin();
-    while (itr != controls.end())
-        if (state.nodes.count(itr.key()))
-            itr++;
-        else
-            itr = controls.erase(itr);
+        if (auto gn = dynamic_cast<GraphNode*>(n))
+            if (!subgraphs.contains(gn))
+                subgraphs[gn].reset(new ViewportScene(gn->getGraph()),
+                                    &QObject::deleteLater);
+    }
+
+    pruneHash(nodes, &controls);
+    pruneHash(nodes, &subgraphs);
 }
 
 void ViewportScene::onGlowChange(Node* n, bool g)
