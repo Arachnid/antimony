@@ -12,6 +12,7 @@
 
 #include "graph/datum.h"
 #include "graph/graph.h"
+#include "graph/graph_node.h"
 
 GraphScene::GraphScene(Graph* graph, QObject* parent)
     : QGraphicsScene(parent)
@@ -25,6 +26,8 @@ GraphScene::~GraphScene()
 {
     for (auto i : inspectors)
         i->deleteLater();
+    for (auto g : subgraphs)
+        g->deleteLater();
 }
 
 Canvas* GraphScene::newCanvas()
@@ -32,29 +35,42 @@ Canvas* GraphScene::newCanvas()
     return new Canvas(this);
 }
 
-void GraphScene::trigger(const GraphState& state)
+template <class N, class T>
+void GraphScene::pruneHash(const QSet<Node*>& nodes, QHash<N*, T>* hash)
 {
-    QSet<Node*> nodes;
-    for (auto n : state.nodes)
-        nodes.insert(n);
-
-    auto itr = inspectors.begin();
-    while (itr != inspectors.end())
+    auto itr = hash->begin();
+    while (itr != hash->end())
     {
         if (!nodes.contains(itr.key()))
         {
             itr.value()->deleteLater();
-            itr = inspectors.erase(itr);
+            itr = hash->erase(itr);
         }
         else
         {
             itr++;
         }
     }
+}
+
+void GraphScene::trigger(const GraphState& state)
+{
+    // Store nodes in a Set for O(1) checking
+    QSet<Node*> nodes;
+    for (auto n : state.nodes)
+        nodes.insert(n);
+
+    pruneHash(nodes, &inspectors);
+    pruneHash(nodes, &subgraphs);
 
     for (auto n : nodes)
+    {
         if (!inspectors.contains(n))
             makeUIfor(n);
+        if (auto gn = dynamic_cast<GraphNode*>(n))
+            if (!subgraphs.contains(gn))
+                subgraphs[gn] = new GraphScene(gn->getGraph());
+    }
 }
 
 void GraphScene::onGlowChange(Node* n, bool g)
@@ -94,12 +110,6 @@ void GraphScene::makeUIfor(Node* n)
             this, &GraphScene::onGlowChange);
     connect(i, &NodeInspector::glowChanged,
             this, &GraphScene::glowChanged);
-
-    /*
-    for (auto d : n->findChildren<Datum*>())
-        for (auto link : d->findChildren<Link*>())
-            makeUIfor(link);
-            */
 }
 
 Connection* GraphScene::makeLinkFrom(Datum* d)
