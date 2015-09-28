@@ -22,14 +22,6 @@ GraphScene::GraphScene(Graph* graph, QObject* parent)
             App::instance(), &App::jumpToInViewport);
 }
 
-GraphScene::~GraphScene()
-{
-    for (auto i : inspectors)
-        i->deleteLater();
-    for (auto g : subgraphs)
-        g->deleteLater();
-}
-
 Canvas* GraphScene::newCanvas()
 {
     return new Canvas(this);
@@ -40,17 +32,10 @@ void GraphScene::pruneHash(const QSet<Node*>& nodes, QHash<N*, T>* hash)
 {
     auto itr = hash->begin();
     while (itr != hash->end())
-    {
         if (!nodes.contains(itr.key()))
-        {
-            itr.value()->deleteLater();
             itr = hash->erase(itr);
-        }
         else
-        {
             itr++;
-        }
-    }
 }
 
 void GraphScene::trigger(const GraphState& state)
@@ -69,7 +54,8 @@ void GraphScene::trigger(const GraphState& state)
             makeUIfor(n);
         if (auto gn = dynamic_cast<GraphNode*>(n))
             if (!subgraphs.contains(gn))
-                subgraphs[gn] = new GraphScene(gn->getGraph());
+                subgraphs[gn].reset(new GraphScene(gn->getGraph()),
+                                    &QObject::deleteLater);
     }
 }
 
@@ -81,7 +67,7 @@ void GraphScene::onGlowChange(Node* n, bool g)
 void GraphScene::makeUIfor(Node* n)
 {
     auto i = new NodeInspector(n);
-    inspectors[n] = i;
+    inspectors[n].reset(i, &QObject::deleteLater);
     addItem(i);
 
     if (views().length() > 0)
@@ -128,7 +114,7 @@ void GraphScene::makeLink(const Datum* source, InputPort* target)
 NodeInspector* GraphScene::getInspector(Node* node) const
 {
     Q_ASSERT(inspectors.contains(node));
-    return inspectors[node];
+    return inspectors[node].data();
 }
 
 template <class T>

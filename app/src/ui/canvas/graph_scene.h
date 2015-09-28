@@ -21,7 +21,6 @@ class GraphScene : public QGraphicsScene, GraphWatcher
     Q_OBJECT
 public:
     GraphScene(Graph* graph, QObject* parent=0);
-    ~GraphScene();
 
     /*
      *  Returns a new Canvas with scene set.
@@ -123,8 +122,8 @@ protected:
 
     QHash<Node*, QString> title_cache;
     QHash<Node*, ExportWorker*> export_cache;
-    QHash<Node*, NodeInspector*> inspectors;
-    QHash<GraphNode*, GraphScene*> subgraphs;
+    QHash<Node*, QSharedPointer<NodeInspector>> inspectors;
+    QHash<GraphNode*, QSharedPointer<GraphScene>> subgraphs;
 };
 
 #endif
