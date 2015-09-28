@@ -114,12 +114,6 @@ signals:
     void jumpTo(Node* node);
 
 protected:
-    /*
-     *  Helper function to prune a hash of items that no longer belong.
-     */
-    template <class N, class T>
-    void pruneHash(const QSet<Node*>& nodes, QHash<N*, T>* hash);
-
     QHash<Node*, QString> title_cache;
     QHash<Node*, ExportWorker*> export_cache;
     QHash<Node*, QSharedPointer<NodeInspector>> inspectors;

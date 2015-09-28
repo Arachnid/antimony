@@ -27,17 +27,6 @@ Canvas* GraphScene::newCanvas()
     return new Canvas(this);
 }
 
-template <class N, class T>
-void GraphScene::pruneHash(const QSet<Node*>& nodes, QHash<N*, T>* hash)
-{
-    auto itr = hash->begin();
-    while (itr != hash->end())
-        if (!nodes.contains(itr.key()))
-            itr = hash->erase(itr);
-        else
-            itr++;
-}
-
 void GraphScene::trigger(const GraphState& state)
 {
     // Store nodes in a Set for O(1) checking
