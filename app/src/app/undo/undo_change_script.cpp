@@ -65,7 +65,7 @@ void UndoChangeScriptCommand::swapNode(Node* a, Node* b) const
 {
     if (n == a)
     {
-        assert(dynamic_cast<ScriptNode*>(b));
+        Q_ASSERT(dynamic_cast<ScriptNode*>(b));
         n = static_cast<ScriptNode*>(b);
     }
 }
