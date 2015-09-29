@@ -72,6 +72,8 @@ public:
 
     void loadFile(QString f);
 
+    MainWindow* newCanvasWindowFor(Graph* graph);
+
 signals:
     void windowTitleChanged(QString new_title);
     void jumpToInViewport(Node* node);
@@ -81,7 +83,7 @@ public slots:
     /*
      *  Opens a new MainWindow with a Canvas as its central widget.
      */
-    MainWindow* newCanvasWindow();
+    MainWindow* newCanvasWindow() { return newCanvasWindowFor(root); }
 
     /*
      *  Opens a new MainWindow with a Viewport as its central widget.

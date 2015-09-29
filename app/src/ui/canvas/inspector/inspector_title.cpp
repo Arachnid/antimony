@@ -10,6 +10,7 @@
 
 #include "graph/node.h"
 #include "graph/script_node.h"
+#include "graph/graph_node.h"
 #include "graph/datum.h"
 
 #include "ui/util/colors.h"
@@ -26,6 +27,11 @@ InspectorTitle::InspectorTitle(Node* n, NodeInspector* parent)
     {
         buttons.append(new InspectorScriptButton(script_node, this));
     }
+    else if (auto graph_node = dynamic_cast<GraphNode*>(n))
+    {
+        buttons.append(new InspectorGraphButton(graph_node, this));
+    }
+
 
     name->setTextInteractionFlags(Qt::TextEditorInteraction);
 

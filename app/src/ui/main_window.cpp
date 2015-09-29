@@ -9,6 +9,7 @@
 #include "app/app.h"
 
 #include "graph/script_node.h"
+#include "graph/graph_node.h"
 #include "graph/graph.h"
 #include "graph/datum.h"
 
@@ -262,4 +263,6 @@ void MainWindow::populateMenu(QMenu* menu, bool recenter, Viewport* v)
                     "input('r', float, 1)\n"
                     "output('c', fab.shapes.circle(0, 0, r))",
                     r); }, v);
+    addNodeToMenu(QStringList(), "Graph", menu, recenter,
+            [](Graph *r){ return new GraphNode("g*", r); });
 }

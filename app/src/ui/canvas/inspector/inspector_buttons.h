@@ -11,6 +11,7 @@ class NodeInspector;
 class ExportWorker;
 
 class ScriptNode;
+class GraphNode;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +30,23 @@ protected slots:
 protected:
     bool script_valid;
     ScriptNode* node;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+class InspectorGraphButton : public GraphicsButton
+{
+    Q_OBJECT
+public:
+    InspectorGraphButton(GraphNode* n, QGraphicsItem* parent);
+
+    QRectF boundingRect() const override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget=0) override;
+protected slots:
+    void onPressed();
+protected:
+    GraphNode* node;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

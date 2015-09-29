@@ -12,6 +12,7 @@
 #include "app/app.h"
 
 #include "graph/script_node.h"
+#include "graph/graph_node.h"
 
 InspectorScriptButton::InspectorScriptButton(ScriptNode* n, QGraphicsItem* parent)
     : GraphicsButton(parent), node(n)
@@ -54,6 +55,47 @@ void InspectorScriptButton::trigger(const ScriptState& state)
 void InspectorScriptButton::onPressed()
 {
     App::instance()->newEditorWindow(node);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+InspectorGraphButton::InspectorGraphButton(GraphNode* n, QGraphicsItem* parent)
+    : GraphicsButton(parent), node(n)
+{
+    setToolTip("Edit script");
+    connect(this, &GraphicsButton::pressed,
+            this, &InspectorGraphButton::onPressed);
+}
+
+QRectF InspectorGraphButton::boundingRect() const
+{
+    return QRectF(0, 0, 16, 15);
+}
+
+void InspectorGraphButton::paint(QPainter* painter,
+                                const QStyleOptionGraphicsItem* option,
+                                QWidget* widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    painter->setPen(Qt::NoPen);
+    const QColor base = Colors::base04;
+    painter->setBrush(hover ? Colors::highlight(base) : base);
+
+    painter->drawEllipse(0, 5, 5, 5);
+    painter->drawEllipse(10, 11, 5, 5);
+    painter->drawEllipse(10, 0, 5, 5);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(hover ? Colors::highlight(base) : base, 2));
+    painter->drawLine(QLineF(2.5, 7.5, 12.5, 13.5));
+    painter->drawLine(QLineF(2.5, 7.5, 12.5, 2.5));
+}
+
+void InspectorGraphButton::onPressed()
+{
+    App::instance()->newCanvasWindowFor(node->getGraph());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

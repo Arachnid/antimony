@@ -393,10 +393,10 @@ QString App::userNodePath() const
     return path;
 }
 
-MainWindow* App::newCanvasWindow()
+MainWindow* App::newCanvasWindowFor(Graph* graph)
 {
     auto m = new MainWindow();
-    auto c = graph_scene->newCanvas();
+    auto c = getGraphScene(graph)->newCanvas();
     m->setCentralWidget(c);
     m->show();
 
