@@ -7,6 +7,8 @@
 
 #include "app/undo/undo_command.h"
 
+class GraphNode;
+
 class UndoDeleteNodeCommand : public UndoCommand
 {
 public:
@@ -24,6 +26,7 @@ protected:
     QMap<QString, Datum*> getDatums() const;
 
     mutable Node* n;
+    mutable GraphNode* parent;
 
     QList<Node*> nodes;
     QMap<QString, Datum*> datums;

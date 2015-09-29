@@ -307,6 +307,18 @@ bool App::event(QEvent *event)
     }
 }
 
+GraphScene* App::getGraphScene(Graph* g) const
+{
+    if (g->parentNode() == NULL)
+        return graph_scene;
+
+    auto gs = getGraphScene(g->parentNode()->parentGraph());
+    auto gs_ = gs->getSubscene(g->parentNode());
+
+    Q_ASSERT(gs_ != NULL);
+    return gs_;
+}
+
 ViewportScene* App::getViewScene(Graph* g) const
 {
     if (g->parentNode() == NULL)

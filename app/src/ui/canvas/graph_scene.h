@@ -95,6 +95,11 @@ public:
      */
     void endDrag(QPointF delta);
 
+    /*
+     *  Returns the subscene for the given node or NULL.
+     */
+    GraphScene* getSubscene(GraphNode* n) const;
+
 public slots:
     /*
      *  When the glow value for a node changes,
@@ -114,6 +119,8 @@ signals:
     void jumpTo(Node* node);
 
 protected:
+    Graph* const graph;
+
     QHash<Node*, QString> title_cache;
     QHash<Node*, ExportWorker*> export_cache;
     QHash<Node*, QSharedPointer<NodeInspector>> inspectors;

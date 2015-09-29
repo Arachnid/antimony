@@ -7,6 +7,7 @@
 
 #include "graph/node.h"
 #include "graph/graph.h"
+#include "graph/graph_node.h"
 #include "graph/datum.h"
 
 #include "graph/node/serializer.h"
@@ -15,7 +16,7 @@
 #include "ui/canvas/graph_scene.h"
 
 UndoDeleteNodeCommand::UndoDeleteNodeCommand(Node* n, QUndoCommand* parent)
-    : UndoCommand(parent), n(n)
+    : UndoCommand(parent), n(n), parent(n->parentGraph()->parentNode())
 {
     setText("'delete node'");
 }
@@ -28,7 +29,8 @@ void UndoDeleteNodeCommand::redo()
 
     // Serialize n into data byte array
     data = SceneSerializer::serializeNode(
-            n, App::instance()->getGraphScene()->inspectorPositions());
+            n, App::instance()->getGraphScene(n->parentGraph())
+                              ->inspectorPositions());
 
     // Tell the system to delete the node
     n->parentGraph()->uninstall(n);
@@ -37,7 +39,9 @@ void UndoDeleteNodeCommand::redo()
 void UndoDeleteNodeCommand::undo()
 {
     // Deserialize the saved node.
-    Graph* g = App::instance()->getGraph();
+    Graph* g = parent ? parent->getGraph()
+                      : App::instance()->getGraph();
+
     SceneDeserializer::Info ds;
     SceneDeserializer::deserializeNode(data, g, &ds);
 
@@ -57,7 +61,7 @@ void UndoDeleteNodeCommand::undo()
         stack->swapPointer(a.value(), new_datums[a.key()]);
     }
 
-    App::instance()->getGraphScene()->setInspectorPositions(ds.inspectors);
+    App::instance()->getGraphScene(g)->setInspectorPositions(ds.inspectors);
 }
 
 QMap<QString, Datum*> UndoDeleteNodeCommand::getDatums() const
@@ -72,4 +76,10 @@ void UndoDeleteNodeCommand::swapNode(Node* a, Node* b) const
 {
     if (n == a)
         n = b;
+
+    if (parent == a)
+    {
+        Q_ASSERT(dynamic_cast<GraphNode*>(b));
+        parent = static_cast<GraphNode*>(b);
+    }
 }

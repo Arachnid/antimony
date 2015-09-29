@@ -15,7 +15,7 @@
 #include "graph/graph_node.h"
 
 GraphScene::GraphScene(Graph* graph, QObject* parent)
-    : QGraphicsScene(parent)
+    : QGraphicsScene(parent), graph(graph)
 {
     graph->installWatcher(this);
     connect(this, &GraphScene::jumpTo,
@@ -24,7 +24,7 @@ GraphScene::GraphScene(Graph* graph, QObject* parent)
 
 Canvas* GraphScene::newCanvas()
 {
-    return new Canvas(this);
+    return new Canvas(graph, this);
 }
 
 void GraphScene::trigger(const GraphState& state)
@@ -217,4 +217,9 @@ void GraphScene::endDrag(QPointF delta)
             App::instance()->pushStack(new UndoMoveCommand(
                         this, i->getNode(), i->pos() - delta, i->pos()));
     App::instance()->endUndoMacro();
+}
+
+GraphScene* GraphScene::getSubscene(GraphNode* n) const
+{
+    return subgraphs[n].data();
 }

@@ -36,7 +36,14 @@ public:
      */
     Graph* getGraph() const { return root; }
 
-    GraphScene* getGraphScene() const { return graph_scene; }
+    /*
+     *  Looks up the GraphScene object for a given graph.
+     */
+    GraphScene* getGraphScene(Graph* g) const;
+
+    /*
+     *  Looks up the ViewportScene object for a given graph.
+     */
     ViewportScene* getViewScene(Graph* g) const;
 
     /*

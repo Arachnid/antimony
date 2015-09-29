@@ -83,12 +83,15 @@ signals:
     void glowChanged(Node* n, bool g);
 
 protected:
-
     /*
      *  Creates a ControlProxy that represents the given Control
      *  in the given QGraphicsScene.
      */
     void makeProxyFor(Control* c, Viewport* v);
+
+    /*  This is the graph used in this viewport scene.
+     */
+    Graph* const graph;
 
     /* Stores viewports for which we've made a QGraphicsScene */
     QSet<Viewport*> viewports;

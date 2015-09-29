@@ -23,7 +23,7 @@ class Viewport : public QGraphicsView
 {
     Q_OBJECT
 public:
-    explicit Viewport(QGraphicsScene* scene, QWidget* parent=0);
+    explicit Viewport(Graph* graph, QGraphicsScene* scene, QWidget* parent=0);
 
     virtual ~Viewport();
 
@@ -112,6 +112,7 @@ public:
     QOpenGLShaderProgram* getShadedShader();
     QOpenGLShaderProgram* getHeightmapShader();
 
+    Graph* const graph;
     QGraphicsScene* scene;
 signals:
     void viewChanged();

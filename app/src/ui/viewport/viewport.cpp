@@ -37,8 +37,8 @@
 #include "app/app.h"
 #include "app/undo/undo_add_node.h"
 
-Viewport::Viewport(QGraphicsScene* scene, QWidget* parent)
-    : QGraphicsView(parent), scene(scene),
+Viewport::Viewport(Graph* graph, QGraphicsScene* scene, QWidget* parent)
+    : QGraphicsView(parent), graph(graph), scene(scene),
       scale(100), pitch(0), yaw(0), angle_locked(false),
       view_selector(new ViewSelector(this)),
       mouse_info(new QGraphicsTextItem("\n")),
@@ -183,7 +183,7 @@ QVector3D Viewport::sceneToWorld(QPointF p) const
 
 void Viewport::makeNodeAtCursor(NodeConstructorFunction f)
 {
-    auto n = f(App::instance()->getGraph());
+    auto n = f(graph);
     App::instance()->pushStack(new UndoAddNodeCommand(n));
 }
 
@@ -697,7 +697,7 @@ void Viewport::onCopy()
             auto n = proxy->getControl()->getNode();
             auto data = new QMimeData();
             const auto inspectors =
-                App::instance()->getGraphScene()->inspectorPositions();
+                App::instance()->getGraphScene(graph)->inspectorPositions();
             data->setData("sb::viewport",
                     QJsonDocument(SceneSerializer::serializeNode(
                             n, inspectors)).toJson());
@@ -716,7 +716,7 @@ void Viewport::onCut()
                 auto n = c->getNode();
                 auto data = new QMimeData();
                 const auto inspectors =
-                    App::instance()->getGraphScene()->inspectorPositions();
+                    App::instance()->getGraphScene(graph)->inspectorPositions();
                 data->setData("sb::viewport",
                         QJsonDocument(SceneSerializer::serializeNode(
                                 n, inspectors)).toJson());
@@ -732,8 +732,7 @@ void Viewport::onPaste()
     auto data = QApplication::clipboard()->mimeData();
     if (data->hasFormat("sb::viewport"))
     {
-        auto g = App::instance()->getGraph();
-        const uint64_t new_uid = g->getUIDs(1).front();
+        const uint64_t new_uid = graph->getUIDs(1).front();
 
         // Update this node's UID and store the change in uid_map
         auto n = QJsonDocument::fromJson(
@@ -742,7 +741,7 @@ void Viewport::onPaste()
         n["uid"] = int(new_uid);
 
         auto name = n["name"].toString();
-        if (!g->isNameUnique(name.toStdString()))
+        if (!graph->isNameUnique(name.toStdString()))
         {
             // Trim trailing numbers from the node's name
             while (name.at(name.size() - 1).isNumber())
@@ -750,20 +749,23 @@ void Viewport::onPaste()
             if (name.isEmpty())
                 name = "n";
             // Then use the remaining string as a prefix
-            n["name"] = QString::fromStdString(g->nextName(name.toStdString()));
+            n["name"] = QString::fromStdString(
+                    graph->nextName(name.toStdString()));
         }
 
         // Deserialize this node
         SceneDeserializer::Info ds;
-        SceneDeserializer::deserializeNode(n, g, &ds);
+        SceneDeserializer::deserializeNode(n, graph, &ds);
 
         // Update the inspector positions by shifting a bit down and over
         for (auto& i : ds.inspectors)
             i += QPointF(10, 10);
-        App::instance()->getGraphScene()->setInspectorPositions(ds.inspectors);
+        App::instance()->getGraphScene(graph)
+                       ->setInspectorPositions(ds.inspectors);
 
         App::instance()->pushStack(
-                new UndoAddNodeCommand(g->childNodes().back(), "'paste'"));
+                new UndoAddNodeCommand(
+                    graph->childNodes().back(), "'paste'"));
     }
 }
 

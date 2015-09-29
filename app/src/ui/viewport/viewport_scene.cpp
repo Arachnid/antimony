@@ -15,7 +15,7 @@
 #include "control/proxy.h"
 
 ViewportScene::ViewportScene(Graph* root, QObject* parent)
-    : QObject(parent), loading(false)
+    : QObject(parent), loading(false), graph(root)
 {
     root->installWatcher(this);
 }
@@ -50,7 +50,7 @@ ViewportScene* ViewportScene::getSubscene(GraphNode* n) const
 Viewport* ViewportScene::newViewport()
 {
     auto s = new QGraphicsScene;
-    auto v = new Viewport(s);
+    auto v = new Viewport(graph, s);
     connect(v, &QObject::destroyed, s, &QObject::deleteLater);
     connect(s, &QObject::destroyed, [=](){ this->viewports.remove(v); });
     viewports.insert(v);

@@ -31,8 +31,8 @@
 #include "graph/node/serializer.h"
 #include "graph/node/deserializer.h"
 
-Canvas::Canvas(QWidget* parent)
-    : QGraphicsView(parent), selecting(false)
+Canvas::Canvas(Graph* graph, QWidget* parent)
+    : QGraphicsView(parent), graph(graph), selecting(false)
 {
     setStyleSheet("QGraphicsView { border-style: none; }");
     setRenderHints(QPainter::Antialiasing);
@@ -42,8 +42,8 @@ Canvas::Canvas(QWidget* parent)
     QAbstractScrollArea::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
-Canvas::Canvas(GraphScene* s, QWidget* parent)
-    : Canvas(parent)
+Canvas::Canvas(Graph* graph, GraphScene* s, QWidget* parent)
+    : Canvas(graph, parent)
 {
     QGraphicsView::setScene(s);
     scene = s;
@@ -207,7 +207,7 @@ void Canvas::deleteSelected()
 
 void Canvas::makeNodeAtCursor(NodeConstructorFunction f)
 {
-    auto n = f(App::instance()->getGraph());
+    auto n = f(graph);
     App::instance()->pushStack(new UndoAddNodeCommand(n));
 
     auto inspector = getNodeInspector(n);
@@ -274,10 +274,9 @@ void Canvas::onPaste()
 void Canvas::pasteNodes(QJsonArray array)
 {
     QList<QPair<uint64_t, uint64_t>> uid_map;
-    auto g = App::instance()->getGraph();
 
     {   // Get the next n UIDs and update the nodes in the array.
-        std::list<uint64_t> uids = g->getUIDs(array.size());
+        std::list<uint64_t> uids = graph->getUIDs(array.size());
         auto itr = uids.begin();
         for (int i=0; i < array.size(); ++i)
         {
@@ -315,7 +314,7 @@ void Canvas::pasteNodes(QJsonArray array)
         auto n = n_.toObject();
 
         auto name = n["name"].toString();
-        if (!g->isNameUnique(name.toStdString()))
+        if (!graph->isNameUnique(name.toStdString()))
         {
             // Trim trailing numbers from the node's name
             while (name.at(name.size() - 1).isNumber())
@@ -323,9 +322,10 @@ void Canvas::pasteNodes(QJsonArray array)
             if (name.isEmpty())
                 name = "n";
             // Then use the remaining string as a prefix
-            n["name"] = QString::fromStdString(g->nextName(name.toStdString()));
+            n["name"] = QString::fromStdString(
+                    graph->nextName(name.toStdString()));
         }
-        SceneDeserializer::deserializeNode(n, g, &ds);
+        SceneDeserializer::deserializeNode(n, graph, &ds);
     }
 
     // Update the inspector positions by shifting a bit down and over
@@ -335,7 +335,7 @@ void Canvas::pasteNodes(QJsonArray array)
     // Pull out the nodes that were just appended to the graph
     QSet<Node*> nodes;
     {
-        auto all_nodes = g->childNodes();
+        auto all_nodes = graph->childNodes();
         auto itr = all_nodes.rbegin();
         for (int i=0; i < array.size(); ++i)
             nodes.insert(*(itr++));
