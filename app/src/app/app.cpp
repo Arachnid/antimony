@@ -18,7 +18,6 @@
 #include "app/undo/stack.h"
 #include "app/undo/undo_command.h"
 
-#include "graph/hooks/hooks.h"
 #include "graph/node/serializer.h"
 #include "graph/node/deserializer.h"
 
@@ -52,8 +51,6 @@ App::App(int& argc, char** argv) :
     stack(new UndoStack(this)), network(new QNetworkAccessManager(this))
 {
     setGlobalStyle();
-
-    root->installExternalHooks(new AppHooks(graph_scene));
 
     // When the clean flag on the undo stack changes, update window titles
     connect(stack, &QUndoStack::cleanChanged,

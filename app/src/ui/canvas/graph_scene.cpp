@@ -10,6 +10,8 @@
 #include "app/app.h"
 #include "app/undo/undo_move.h"
 
+#include "graph/hooks/hooks.h"
+
 #include "graph/datum.h"
 #include "graph/graph.h"
 #include "graph/graph_node.h"
@@ -18,6 +20,7 @@ GraphScene::GraphScene(Graph* graph, QObject* parent)
     : QGraphicsScene(parent), graph(graph)
 {
     graph->installWatcher(this);
+    graph->installExternalHooks(new AppHooks(this));
     connect(this, &GraphScene::jumpTo,
             App::instance(), &App::jumpToInViewport);
 }
