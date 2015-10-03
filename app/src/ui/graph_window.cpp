@@ -9,10 +9,9 @@
 #include "graph/graph.h"
 
 GraphWindow::GraphWindow(Canvas* c)
-    : parent(c->graph->parentNode())
+    : MainWindow("Graph"), parent(c->graph->parentNode())
 {
     setCentralWidget(c);
-    window_type = "Graph";
 
     ui->menuView->deleteLater();
     ui->menuReference->deleteLater();

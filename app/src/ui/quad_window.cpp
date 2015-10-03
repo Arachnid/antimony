@@ -9,6 +9,7 @@
 #include "graph/node.h"
 
 QuadWindow::QuadWindow(ViewportScene* scene)
+    : MainWindow("Quad")
 {
     auto g = new QGridLayout();
 

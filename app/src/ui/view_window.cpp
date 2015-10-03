@@ -7,9 +7,9 @@
 #include "graph/node.h"
 
 ViewportWindow::ViewportWindow(Viewport* v)
+    : MainWindow("Viewport")
 {
     setCentralWidget(v);
-    window_type = "Viewport";
 
     ui->menuReference->deleteLater();
 

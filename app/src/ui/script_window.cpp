@@ -9,7 +9,8 @@
 #include "graph/graph.h"
 
 ScriptWindow::ScriptWindow(ScriptNode* n)
-    : graph(n->parentGraph()), pane(new ScriptPane(n, this))
+    : MainWindow("Script"), graph(n->parentGraph()),
+      pane(new ScriptPane(n, this))
 {
     ui->menuView->deleteLater();
     ui->menuAdd->deleteLater();

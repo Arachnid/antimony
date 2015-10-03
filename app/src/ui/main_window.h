@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QString type, QWidget *parent=0);
     ~MainWindow();
 
     /** Populate a menu with all of the widgets.

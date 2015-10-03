@@ -22,8 +22,8 @@
 
 #include "control/proxy.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QString type, QWidget *parent) :
+    QMainWindow(parent), window_type(type), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -84,7 +84,7 @@ void MainWindow::connectActions(App* app)
             app, &App::startUpdateCheck);
 
     // Window title
-    setWindowTitle(app->getWindowTitle());
+    setWindowTitle(app->getWindowTitle().arg(window_type));
     connect(app, &App::windowTitleChanged, this,
             [=](QString title){
                 this->setWindowTitle(title.arg(window_type));});
