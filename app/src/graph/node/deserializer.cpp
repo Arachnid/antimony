@@ -9,8 +9,9 @@
 #include "app/app.h"
 
 #include "graph/node/deserializer.h"
-#include "graph/node.h"
+
 #include "graph/script_node.h"
+#include "graph/graph_node.h"
 #include "graph/graph.h"
 
 PyObject* SceneDeserializer::globals = NULL;
@@ -43,7 +44,7 @@ bool SceneDeserializer::run(QJsonObject in, Graph* graph, Info* info)
                 info->error_message = "File was saved with a older protocol and can no longer be read.";
             return false;
         }
-        else if (protocol_version > 6)
+        else if (protocol_version > 7)
         {
             if (info)
                 info->error_message = "File was saved with a newer protocol and cannot yet be read.";
@@ -72,9 +73,10 @@ void SceneDeserializer::deserializeNode(QJsonObject in, Graph* p, Info* info)
         node = new ScriptNode(in["name"].toString().toStdString(),
                               in["uid"].toDouble(), p);
     }
-    else
+    else if (in.contains("subgraph"))
     {
-        assert(false);
+        node = new GraphNode(in["name"].toString().toStdString(),
+                             in["uid"].toDouble(), p);
     }
 
     // Deserialize inspector position
@@ -91,6 +93,11 @@ void SceneDeserializer::deserializeNode(QJsonObject in, Graph* p, Info* info)
         for (auto line : in["script"].toArray())
             s.append(line.toString());
         script_node->setScript(s.join("\n").toStdString());
+    }
+    else if (auto graph_node = dynamic_cast<GraphNode*>(node))
+    {
+        for (auto n : in["subgraph"].toArray())
+            deserializeNode(n.toObject(), graph_node->getGraph(), info);
     }
 }
 

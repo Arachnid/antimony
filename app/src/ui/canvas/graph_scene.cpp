@@ -210,6 +210,9 @@ void GraphScene::setInspectorPositions(QMap<Node*, QPointF> p)
         if (auto i = dynamic_cast<NodeInspector*>(m))
             if (p.contains(i->getNode()))
                 i->setPos(p[i->getNode()]);
+
+    for (auto sub : subgraphs)
+        sub->setInspectorPositions(p);
 }
 
 void GraphScene::endDrag(QPointF delta)
