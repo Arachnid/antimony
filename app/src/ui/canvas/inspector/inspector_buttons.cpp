@@ -62,7 +62,7 @@ void InspectorScriptButton::onPressed()
 InspectorGraphButton::InspectorGraphButton(GraphNode* n, QGraphicsItem* parent)
     : GraphicsButton(parent), node(n)
 {
-    setToolTip("Edit script");
+    setToolTip("Edit graph");
     connect(this, &GraphicsButton::pressed,
             this, &InspectorGraphButton::onPressed);
 }
@@ -100,6 +100,77 @@ void InspectorGraphButton::onPressed()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+InspectorViewButton::InspectorViewButton(GraphNode* n, QGraphicsItem* parent)
+    : GraphicsButton(parent), node(n)
+{
+    setToolTip("Open viewport");
+    connect(this, &GraphicsButton::pressed,
+            this, &InspectorViewButton::onPressed);
+}
+
+QRectF InspectorViewButton::boundingRect() const
+{
+    return QRectF(0, 0, 16, 15);
+}
+
+void InspectorViewButton::paint(QPainter* painter,
+                                const QStyleOptionGraphicsItem* option,
+                                QWidget* widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    painter->setBrush(Qt::NoBrush);
+    const QColor base = Colors::base04;
+    painter->setPen(QPen(hover ? Colors::highlight(base) : base, 2));
+
+    painter->drawRect(1, 1, 14, 14);
+    painter->drawLine(1, 8, 15, 8);
+    painter->drawLine(8, 1, 8, 15);
+}
+
+void InspectorViewButton::onPressed()
+{
+    App::instance()->newViewportWindowFor(node->getGraph());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+InspectorQuadButton::InspectorQuadButton(GraphNode* n, QGraphicsItem* parent)
+    : GraphicsButton(parent), node(n)
+{
+    setToolTip("Open quad window");
+    connect(this, &GraphicsButton::pressed,
+            this, &InspectorQuadButton::onPressed);
+}
+
+QRectF InspectorQuadButton::boundingRect() const
+{
+    return QRectF(0, 0, 16, 16);
+}
+
+void InspectorQuadButton::paint(QPainter* painter,
+                                const QStyleOptionGraphicsItem* option,
+                                QWidget* widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    painter->setBrush(Qt::NoBrush);
+    const QColor base = Colors::base04;
+    painter->setPen(QPen(hover ? Colors::highlight(base) : base, 2));
+
+    painter->drawRect(1, 15, 15, 1);
+    painter->drawLine(1, 15, 1, 1);
+    painter->drawLine(1, 15, 8, 8);
+}
+
+void InspectorQuadButton::onPressed()
+{
+    App::instance()->newQuadWindowFor(node->getGraph());
+}
+
+////////////////////////////////////////////////////////////////////////////////
 InspectorShowHiddenButton::InspectorShowHiddenButton(
         QGraphicsItem* parent, NodeInspector* inspector)
     : GraphicsButton(parent), toggled(false), inspector(inspector)

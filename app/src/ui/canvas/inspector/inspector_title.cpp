@@ -29,6 +29,8 @@ InspectorTitle::InspectorTitle(Node* n, NodeInspector* parent)
     }
     else if (auto graph_node = dynamic_cast<GraphNode*>(n))
     {
+        buttons.append(new InspectorViewButton(graph_node, this));
+        buttons.append(new InspectorQuadButton(graph_node, this));
         buttons.append(new InspectorGraphButton(graph_node, this));
     }
 

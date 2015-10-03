@@ -49,6 +49,36 @@ protected:
     GraphNode* node;
 };
 
+class InspectorViewButton : public GraphicsButton
+{
+    Q_OBJECT
+public:
+    InspectorViewButton(GraphNode* n, QGraphicsItem* parent);
+
+    QRectF boundingRect() const override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget=0) override;
+protected slots:
+    void onPressed();
+protected:
+    GraphNode* node;
+};
+
+class InspectorQuadButton : public GraphicsButton
+{
+    Q_OBJECT
+public:
+    InspectorQuadButton(GraphNode* n, QGraphicsItem* parent);
+
+    QRectF boundingRect() const override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget=0) override;
+protected slots:
+    void onPressed();
+protected:
+    GraphNode* node;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 
 class InspectorShowHiddenButton : public GraphicsButton, NodeWatcher

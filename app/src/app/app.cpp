@@ -399,14 +399,14 @@ MainWindow* App::newCanvasWindowFor(Graph* graph)
     return new GraphWindow(getGraphScene(graph)->newCanvas());
 }
 
-MainWindow* App::newViewportWindow()
+MainWindow* App::newViewportWindowFor(Graph* graph)
 {
-    return new ViewportWindow(view_scene->newViewport());
+    return new ViewportWindow(getViewScene(graph)->newViewport());
 }
 
-MainWindow* App::newQuadWindow()
+MainWindow* App::newQuadWindowFor(Graph* graph)
 {
-    return new QuadWindow(view_scene);
+    return new QuadWindow(getViewScene(graph));
 }
 
 MainWindow* App::newEditorWindow(ScriptNode* n)

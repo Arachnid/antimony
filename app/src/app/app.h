@@ -73,6 +73,8 @@ public:
     void loadFile(QString f);
 
     MainWindow* newCanvasWindowFor(Graph* graph);
+    MainWindow* newViewportWindowFor(Graph* graph);
+    MainWindow* newQuadWindowFor(Graph* graph);
 
 signals:
     void windowTitleChanged(QString new_title);
@@ -88,12 +90,12 @@ public slots:
     /*
      *  Opens a new MainWindow with a Viewport as its central widget.
      */
-    MainWindow* newViewportWindow();
+    MainWindow* newViewportWindow() { return newViewportWindowFor(root); }
 
     /*
      *  Opens a new MainWindow with four Viewports.
      */
-    MainWindow* newQuadWindow();
+    MainWindow* newQuadWindow() { return newQuadWindowFor(root); }
 
     /*
      *  Opens a new editor window targetting the given datum.
