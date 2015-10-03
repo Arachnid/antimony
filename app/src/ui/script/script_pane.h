@@ -8,7 +8,7 @@
 
 namespace Ui { class MainWindow; }
 
-class ScriptPane : public QWidget, ScriptWatcher, GraphWatcher
+class ScriptPane : public QWidget, ScriptWatcher
 {
     Q_OBJECT
 public:
@@ -24,11 +24,6 @@ public:
      *  On node change, update stdout and error panes.
      */
     void trigger(const ScriptState& state) override;
-
-    /*
-     *  On graph change, delete self if the node is gone.
-     */
-    void trigger(const GraphState& state) override;
 
     /*
      *  Returns the target datum.

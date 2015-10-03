@@ -41,7 +41,6 @@ ScriptPane::ScriptPane(ScriptNode* node, QWidget* parent)
     layout->setContentsMargins(20, 0, 20, 0);
 
     node->installScriptWatcher(this);
-    graph->installWatcher(this);
 
     setLayout(layout);
     trigger(node->getScriptState());
@@ -51,7 +50,6 @@ ScriptPane::~ScriptPane()
 {
     if (node)
         node->uninstallScriptWatcher(this);
-    graph->uninstallWatcher(this);
 }
 
 void ScriptPane::trigger(const ScriptState& state)
@@ -81,15 +79,6 @@ void ScriptPane::trigger(const ScriptState& state)
     }
 
     resizePanes();
-}
-
-void ScriptPane::trigger(const GraphState& state)
-{
-    if (state.nodes.count(node) == 0)
-    {
-        node = NULL;
-        static_cast<MainWindow*>(parent())->close();
-    }
 }
 
 void ScriptPane::resizeEvent(QResizeEvent* event)

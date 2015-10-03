@@ -6,11 +6,11 @@
 #include "ui/script/editor.h"
 
 #include "graph/script_node.h"
+#include "graph/graph.h"
 
 ScriptWindow::ScriptWindow(ScriptNode* n)
+    : graph(n->parentGraph()), pane(new ScriptPane(n, this))
 {
-    auto pane = new ScriptPane(n, this);
-
     ui->menuView->deleteLater();
     ui->menuAdd->deleteLater();
 
@@ -24,9 +24,26 @@ ScriptWindow::ScriptWindow(ScriptNode* n)
     connect(ui->actionShapes, &QAction::triggered,
             this, &ScriptWindow::openShapesLibrary);
 
+    graph->installWatcher(this);
+
     setCentralWidget(pane);
     resize(600, 800);
     show();
+}
+
+ScriptWindow::~ScriptWindow()
+{
+    if (graph)
+        graph->uninstallWatcher(this);
+}
+
+void ScriptWindow::trigger(const GraphState& state)
+{
+    if (state.nodes.count(pane->node) == 0)
+    {
+        pane->node = NULL;
+        close();
+    }
 }
 
 void ScriptWindow::openShapesLibrary() const

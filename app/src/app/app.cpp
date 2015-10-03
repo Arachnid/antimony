@@ -24,10 +24,11 @@
 #include "ui/dialogs/resolution_dialog.h"
 #include "ui/dialogs/exporting_dialog.h"
 
-#include "ui/main_window.h"
 #include "ui/graph_window.h"
 #include "ui/view_window.h"
+#include "ui/script_window.h"
 #include "ui/quad_window.h"
+
 #include "ui/canvas/canvas.h"
 #include "ui/canvas/graph_scene.h"
 #include "ui/viewport/viewport.h"
@@ -410,11 +411,7 @@ MainWindow* App::newQuadWindow()
 
 MainWindow* App::newEditorWindow(ScriptNode* n)
 {
-    auto m = new MainWindow();
-    m->setCentralWidget(new ScriptPane(n, m));
-    m->resize(600, 800);
-    m->show();
-    return m;
+    return new ScriptWindow(n);
 }
 
 QAction* App::undoAction()
