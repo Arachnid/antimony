@@ -5,8 +5,11 @@
 #include "ui/canvas/canvas.h"
 
 #include "graph/node.h"
+#include "graph/graph_node.h"
+#include "graph/graph.h"
 
 GraphWindow::GraphWindow(Canvas* c)
+    : parent(c->graph->parentNode())
 {
     setCentralWidget(c);
     window_type = "Graph";
@@ -24,5 +27,19 @@ GraphWindow::GraphWindow(Canvas* c)
     connect(App::instance(), &App::jumpToInGraph,
             c, &Canvas::onJumpTo);
 
+    if (parent)
+        parent->parentGraph()->installWatcher(this);
     show();
+}
+
+GraphWindow::~GraphWindow()
+{
+    if (parent)
+        parent->parentGraph()->uninstallWatcher(this);
+}
+
+void GraphWindow::trigger(const GraphState& state)
+{
+    if (state.nodes.count(parent) == 0)
+        close();
 }
