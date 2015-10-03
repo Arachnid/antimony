@@ -15,7 +15,7 @@
 #include "control/proxy.h"
 
 ViewportScene::ViewportScene(Graph* root, QObject* parent)
-    : QObject(parent), loading(false), graph(root)
+    : QObject(parent), graph(root), loading(false)
 {
     root->installWatcher(this);
 }
@@ -68,6 +68,7 @@ void ViewportScene::trigger(const GraphState& state)
     for (auto n : state.nodes)
     {
         nodes.insert(n);
+
         // If this node is one that we don't have a ControlRoot for,
         // create one (except in the special case when loading is set,
         // which indicates that we're loading the scene)
