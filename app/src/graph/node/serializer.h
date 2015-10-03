@@ -12,16 +12,15 @@
 class Datum;
 class Node;
 class Graph;
+class GraphScene;
 
 namespace SceneSerializer
 {
-    QJsonObject run(
-            Graph* root,
-            QMap<Node*, QPointF> inspectors=QMap<Node*, QPointF>());
+    QJsonObject run(const Graph* root, const GraphScene* scene);
 
-    QJsonArray serializeNodes(Graph* r, QMap<Node*, QPointF> inspectors);
-    QJsonObject serializeNode(Node* node, QMap<Node*, QPointF> inspectors);
-    QJsonObject serializeDatum(Datum* datum);
+    QJsonArray serializeNodes(const Graph* r, const GraphScene* scene);
+    QJsonObject serializeNode(const Node* node, const GraphScene* scene);
+    QJsonObject serializeDatum(const Datum* datum);
 
     extern int PROTOCOL_VERSION;
 };

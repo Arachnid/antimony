@@ -223,9 +223,8 @@ void Canvas::onCopy()
         if (!selected.isEmpty())
         {
             QJsonArray out;
-            const auto i = scene->inspectorPositions();
             for (auto n : selected)
-                out << SceneSerializer::serializeNode(n, i);
+                out << SceneSerializer::serializeNode(n, scene);
 
             auto data = new QMimeData();
             data->setData("sb::canvas", QJsonDocument(out).toJson());

@@ -143,8 +143,7 @@ void App::onSave()
     file.open(QIODevice::WriteOnly);
 
     file.write(QJsonDocument(
-            SceneSerializer::run(
-                root, graph_scene->inspectorPositions())).toJson());
+            SceneSerializer::run(root, graph_scene)).toJson());
 
     stack->setClean();
 }

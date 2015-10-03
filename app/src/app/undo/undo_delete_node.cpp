@@ -29,8 +29,7 @@ void UndoDeleteNodeCommand::redo()
 
     // Serialize n into data byte array
     data = SceneSerializer::serializeNode(
-            n, App::instance()->getGraphScene(n->parentGraph())
-                              ->inspectorPositions());
+            n, App::instance()->getGraphScene(n->parentGraph()));
 
     // Tell the system to delete the node
     n->parentGraph()->uninstall(n);

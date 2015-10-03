@@ -222,7 +222,7 @@ void GraphScene::endDrag(QPointF delta)
     App::instance()->endUndoMacro();
 }
 
-GraphScene* GraphScene::getSubscene(GraphNode* n) const
+GraphScene* GraphScene::getSubscene(const GraphNode* n) const
 {
-    return subgraphs[n].data();
+    return subgraphs[const_cast<GraphNode*>(n)].data();
 }

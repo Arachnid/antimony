@@ -665,11 +665,10 @@ void Viewport::onCopy()
         {
             auto n = proxy->getControl()->getNode();
             auto data = new QMimeData();
-            const auto inspectors =
-                App::instance()->getGraphScene(graph)->inspectorPositions();
+            const auto scene = App::instance()->getGraphScene(graph);
             data->setData("sb::viewport",
                     QJsonDocument(SceneSerializer::serializeNode(
-                            n, inspectors)).toJson());
+                            n, scene)).toJson());
 
             QApplication::clipboard()->setMimeData(data);
         }
@@ -684,11 +683,11 @@ void Viewport::onCut()
             {
                 auto n = c->getNode();
                 auto data = new QMimeData();
-                const auto inspectors =
-                    App::instance()->getGraphScene(graph)->inspectorPositions();
+                const auto scene =
+                    App::instance()->getGraphScene(graph);
                 data->setData("sb::viewport",
                         QJsonDocument(SceneSerializer::serializeNode(
-                                n, inspectors)).toJson());
+                                n, scene)).toJson());
 
                 QApplication::clipboard()->setMimeData(data);
                 proxy->getControl()->deleteNode("'cut'");

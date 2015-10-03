@@ -3,9 +3,10 @@
 #include <QStringList>
 
 #include "graph/node/serializer.h"
+#include "ui/canvas/graph_scene.h"
 
-#include "graph/node.h"
 #include "graph/script_node.h"
+#include "graph/graph_node.h"
 #include "graph/graph.h"
 #include "graph/datum.h"
 
@@ -20,37 +21,40 @@
 // 5 -> 6: (refactored graph engine)
 //   Store scripts and names at node level
 //   Remove explicit connections array
-int SceneSerializer::PROTOCOL_VERSION = 6;
+// 6 -> 7:
+//   Add support for subgraphs (backwards-compatible with 6 for loading files)
+int SceneSerializer::PROTOCOL_VERSION = 7;
 
-QJsonObject SceneSerializer::run(Graph* root, QMap<Node*, QPointF> inspectors)
+QJsonObject SceneSerializer::run(const Graph* root, const GraphScene* scene)
 {
     QJsonObject out;
     out["type"] = "sb";
     out["protocol"] = PROTOCOL_VERSION;
-    out["nodes"] = serializeNodes(root, inspectors);
+    out["nodes"] = serializeNodes(root, scene);
 
     return out;
 }
 
-QJsonArray SceneSerializer::serializeNodes(Graph* r, QMap<Node*, QPointF> inspectors)
+QJsonArray SceneSerializer::serializeNodes(const Graph* r, const GraphScene* scene)
 {
     QJsonArray out;
     for (auto node : r->childNodes())
-        out.append(serializeNode(node, inspectors));
+        out.append(serializeNode(node, scene));
     return out;
 }
 
-QJsonObject SceneSerializer::serializeNode(Node* node, QMap<Node*, QPointF> inspectors)
+QJsonObject SceneSerializer::serializeNode(const Node* node, const GraphScene* scene)
 {
     QJsonObject out;
 
+    auto inspectors = scene->inspectorPositions();
     out["inspector"] = QJsonArray({
-            inspectors[node].x(),
-            inspectors[node].y()});
+            inspectors[const_cast<Node*>(node)].x(),
+            inspectors[const_cast<Node*>(node)].y()});
     out["name"] = QString::fromStdString(node->getName());
     out["uid"] = int(node->getUID());
 
-    if (auto script_node = dynamic_cast<ScriptNode*>(node))
+    if (auto script_node = dynamic_cast<const ScriptNode*>(node))
     {
         auto expr = QString::fromStdString(script_node->getScript());
         auto a = QJsonArray();
@@ -58,6 +62,12 @@ QJsonObject SceneSerializer::serializeNode(Node* node, QMap<Node*, QPointF> insp
             a.append(line);
         out["script"] = a;
     }
+    else if (auto graph_node = dynamic_cast<const GraphNode*>(node))
+    {
+        out["subgraph"] = serializeNodes(graph_node->getGraph(),
+                                         scene->getSubscene(graph_node));
+    }
+
 
     QJsonArray datum_array;
     for (auto d : node->childDatums())
@@ -67,7 +77,7 @@ QJsonObject SceneSerializer::serializeNode(Node* node, QMap<Node*, QPointF> insp
     return out;
 }
 
-QJsonObject SceneSerializer::serializeDatum(Datum* datum)
+QJsonObject SceneSerializer::serializeDatum(const Datum* datum)
 {
     QJsonObject out;
 

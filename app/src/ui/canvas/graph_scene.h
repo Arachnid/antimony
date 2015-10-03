@@ -98,7 +98,7 @@ public:
     /*
      *  Returns the subscene for the given node or NULL.
      */
-    GraphScene* getSubscene(GraphNode* n) const;
+    GraphScene* getSubscene(const GraphNode* n) const;
 
 public slots:
     /*
