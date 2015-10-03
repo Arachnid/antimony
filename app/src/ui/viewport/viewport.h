@@ -27,11 +27,6 @@ public:
 
     virtual ~Viewport();
 
-    /*
-     *  Connect to appropriate UI actions and modify menus.
-     */
-    void customizeUI(Ui::MainWindow* ui);
-
     /** Returns our scale + rotation +translate transform matrix.
      */
     QMatrix4x4 getMatrix() const;
@@ -133,6 +128,14 @@ public slots:
 
     void spinTo(float new_yaw, float new_pitch);
 
+    /** Hides all Control UI elements.
+     */
+    void hideUI();
+
+    /** Shows all Control UI elements.
+     */
+    void showUI();
+
 protected:
     /*
      *  Detects if we're near a major axis.  Returns a tuple
@@ -213,14 +216,6 @@ protected:
     /** On resize, reposition the view selector menu
      */
     void resizeEvent(QResizeEvent* e) override;
-
-    /** Hides all Control UI elements.
-     */
-    void hideUI();
-
-    /** Shows all Control UI elements.
-     */
-    void showUI();
 
     QVector3D center;
     float scale;

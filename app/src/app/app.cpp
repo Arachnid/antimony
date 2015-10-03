@@ -25,6 +25,9 @@
 #include "ui/dialogs/exporting_dialog.h"
 
 #include "ui/main_window.h"
+#include "ui/graph_window.h"
+#include "ui/view_window.h"
+#include "ui/quad_window.h"
 #include "ui/canvas/canvas.h"
 #include "ui/canvas/graph_scene.h"
 #include "ui/viewport/viewport.h"
@@ -392,84 +395,17 @@ QString App::userNodePath() const
 
 MainWindow* App::newCanvasWindowFor(Graph* graph)
 {
-    auto m = new MainWindow();
-    auto c = getGraphScene(graph)->newCanvas();
-    m->setCentralWidget(c);
-    m->show();
-
-    connect(this, &App::jumpToInGraph,
-            c, &Canvas::onJumpTo);
-
-    return m;
+    return new GraphWindow(getGraphScene(graph)->newCanvas());
 }
 
 MainWindow* App::newViewportWindow()
 {
-    auto m = new MainWindow();
-    auto v = view_scene->newViewport();
-    m->setCentralWidget(v);
-    m->show();
-    connect(v, &Viewport::jumpTo,
-            this, &App::jumpToInGraph);
-    connect(this, &App::jumpToInViewport,
-            v, &Viewport::onJumpTo);
-    return m;
+    return new ViewportWindow(view_scene->newViewport());
 }
 
 MainWindow* App::newQuadWindow()
 {
-    auto m = new MainWindow();
-    auto g = new QGridLayout();
-
-    auto top = view_scene->newViewport();
-    auto front = view_scene->newViewport();
-    auto side = view_scene->newViewport();
-    auto other = view_scene->newViewport();
-
-    for (auto a : {top, front, side})
-        for (auto b : {top, front, side})
-            if (a != b)
-            {
-                connect(a, &Viewport::scaleChanged,
-                        b, &Viewport::setScale);
-                connect(a, &Viewport::centerChanged,
-                        b, &Viewport::setCenter);
-            }
-
-    for (auto v : {top, front, side, other})
-    {
-        connect(v, &Viewport::jumpTo,
-                this, &App::jumpToInGraph);
-        connect(this, &App::jumpToInViewport,
-                v, &Viewport::onJumpTo);
-    }
-
-    top->lockAngle(0, 0);
-    front->lockAngle(0, -M_PI/2);
-    side->lockAngle(-M_PI/2, -M_PI/2);
-    other->spinTo(-M_PI/4, -M_PI/4);
-
-    top->hideViewSelector();
-    front->hideViewSelector();
-    side->hideViewSelector();
-    other->hideViewSelector();
-
-    g->addWidget(top, 1, 0);
-    g->addWidget(front, 0, 0);
-    g->addWidget(side, 0, 1);
-    g->addWidget(other, 1, 1);
-    g->setContentsMargins(0, 0, 0, 0);
-    g->setSpacing(2);
-
-    auto w = new QWidget();
-    w->setStyleSheet(QString(
-                "QWidget {"
-                "   background-color: %1;"
-                "}").arg(Colors::base01.name()));
-    w->setLayout(g);
-    m->setCentralWidget(w);
-    m->show();
-    return m;
+    return new QuadWindow(view_scene);
 }
 
 MainWindow* App::newEditorWindow(ScriptNode* n)

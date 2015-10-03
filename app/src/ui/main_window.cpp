@@ -35,34 +35,22 @@ MainWindow::MainWindow(QWidget *parent) :
     setShortcuts();
 
     populateMenu(ui->menuAdd);
+
+    // Make the 'Shaded' and 'Heightmap' menu items exclusive
+    QActionGroup* view_actions = new QActionGroup(this);
+    view_actions->addAction(ui->actionShaded);
+    view_actions->addAction(ui->actionHeightmap);
+    view_actions->setExclusive(true);
+
+    // Accept the global command-line argument '--heightmap'
+    // to always open scenes in height-map view.
+    if (App::instance()->arguments().contains("--heightmap"))
+        ui->actionHeightmap->setChecked(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::setCentralWidget(QWidget* w)
-{
-    QMainWindow::setCentralWidget(w);
-
-    if (auto c = dynamic_cast<Canvas*>(centralWidget()))
-    {
-        c->customizeUI(ui);
-        window_type = "Graph";
-    }
-    else if (auto e = dynamic_cast<ScriptPane*>(centralWidget()))
-    {
-        e->customizeUI(ui);
-        window_type = "Script";
-    }
-    else
-    {
-        for (auto v : findChildren<Viewport*>())
-            v->customizeUI(ui);
-        window_type = "View";
-    }
-    setWindowTitle(windowTitle().arg(window_type));
 }
 
 void MainWindow::connectActions(App* app)

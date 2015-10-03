@@ -21,11 +21,6 @@ public:
     ~ScriptPane();
 
     /*
-     *  Connect to appropriate UI actions and modify menus.
-     */
-    void customizeUI(Ui::MainWindow* ui);
-
-    /*
      *  On node change, update stdout and error panes.
      */
     void trigger(const ScriptState& state) override;
@@ -59,6 +54,8 @@ protected:
     ScriptEditor* editor;
     QPlainTextEdit* output;
     QPlainTextEdit* error;
+
+    friend class ScriptWindow;
 };
 
 #endif

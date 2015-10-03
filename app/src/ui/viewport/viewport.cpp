@@ -67,37 +67,6 @@ Viewport::~Viewport()
         d->clearTextures();
 }
 
-void Viewport::customizeUI(Ui::MainWindow* ui)
-{
-    ui->menuReference->deleteLater();
-
-    QActionGroup* view_actions = new QActionGroup(this);
-    view_actions->addAction(ui->actionShaded);
-    view_actions->addAction(ui->actionHeightmap);
-    view_actions->setExclusive(true);
-
-    // Accept the global command-line argument '--heightmap'
-    // to always open scenes in height-map view.
-    if (App::instance()->arguments().contains("--heightmap"))
-        ui->actionHeightmap->setChecked(true);
-
-    connect(ui->actionShaded, &QAction::triggered,
-            [&]{ scene->invalidate(); });
-    connect(ui->actionHeightmap, &QAction::triggered,
-            [&]{ scene->invalidate(); });
-
-    connect(ui->actionHideUI, &QAction::triggered,
-            [&](bool b){ if (b) hideUI();
-                         else   showUI(); });
-
-    connect(ui->actionCopy, &QAction::triggered,
-            this, &Viewport::onCopy);
-    connect(ui->actionCut, &QAction::triggered,
-            this, &Viewport::onCut);
-    connect(ui->actionPaste, &QAction::triggered,
-            this, &Viewport::onPaste);
-}
-
 void Viewport::initializeGL()
 {
     float vbuf[] = {

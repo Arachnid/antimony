@@ -16,11 +16,6 @@ public:
     explicit ScriptEditor(ScriptNode* node, QWidget* parent=NULL);
 
     /*
-     *  Connect to appropriate UI actions and modify menus.
-     */
-    void customizeUI(Ui::MainWindow* ui);
-
-    /*
      *  The ScriptEditor isn't a ScriptWatcher directly, but
      *  its parent ScriptPane is and will call trigger when needed.
      */
@@ -28,18 +23,18 @@ public:
 
     void setNode(ScriptNode* n);
 
+    /*
+     *  Applies fixed-width font and Python syntax highlighter.
+     */
+    static void styleEditor(QPlainTextEdit* ed);
+
 public slots:
     void onTextChanged();
 
 protected slots:
     void onUndoCommandAdded();
-    void openShapesLibrary();
 
 protected:
-    /*
-     *  Applies fixed-width font and Python syntax highlighter.
-     */
-    static void styleEditor(QPlainTextEdit* ed);
 
     /*
      *  Filter out control+Z events.

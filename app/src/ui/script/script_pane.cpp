@@ -92,11 +92,6 @@ void ScriptPane::trigger(const GraphState& state)
     }
 }
 
-void ScriptPane::customizeUI(Ui::MainWindow* ui)
-{
-    editor->customizeUI(ui);
-}
-
 void ScriptPane::resizeEvent(QResizeEvent* event)
 {
     resizePanes();

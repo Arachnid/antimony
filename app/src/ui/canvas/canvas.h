@@ -20,11 +20,6 @@ public:
     explicit Canvas(Graph* graph, QWidget* parent=0);
     explicit Canvas(Graph* graph, GraphScene* scene, QWidget* parent=0);
 
-    /*
-     *  Connect to appropriate UI actions and modify menus.
-     */
-    void customizeUI(Ui::MainWindow* ui);
-
     void makeNodeAtCursor(NodeConstructorFunction f);
 
     NodeInspector* getNodeInspector(Node* n) const;

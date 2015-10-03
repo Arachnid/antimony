@@ -49,19 +49,6 @@ Canvas::Canvas(Graph* graph, GraphScene* s, QWidget* parent)
     scene = s;
 }
 
-void Canvas::customizeUI(Ui::MainWindow* ui)
-{
-    ui->menuView->deleteLater();
-    ui->menuReference->deleteLater();
-
-    connect(ui->actionCopy, &QAction::triggered,
-            this, &Canvas::onCopy);
-    connect(ui->actionCut, &QAction::triggered,
-            this, &Canvas::onCut);
-    connect(ui->actionPaste, &QAction::triggered,
-            this, &Canvas::onPaste);
-}
-
 void Canvas::mousePressEvent(QMouseEvent* event)
 {
     QGraphicsView::mousePressEvent(event);

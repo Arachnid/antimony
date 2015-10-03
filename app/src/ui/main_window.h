@@ -24,11 +24,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    /*
-     *  Updates menus once the central widget is set.
-     */
-    void setCentralWidget(QWidget* w);
-
     /** Populate a menu with all of the widgets.
      */
     void populateMenu(QMenu* menu, bool recenter=true, Viewport* v=NULL);
@@ -37,7 +32,7 @@ public:
      */
     bool isShaded() const;
 
-private:
+protected:
     /*
      *  Connects menu actions to App slots.
      */

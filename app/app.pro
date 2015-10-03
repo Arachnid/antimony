@@ -52,6 +52,10 @@ SOURCES += \
     src/app/main.cpp \
     src/app/app.cpp \
     src/ui/main_window.cpp \
+    src/ui/graph_window.cpp \
+    src/ui/view_window.cpp \
+    src/ui/quad_window.cpp \
+    src/ui/script_window.cpp \
     src/ui/canvas/canvas.cpp \
     src/ui/canvas/graph_scene.cpp \
     src/ui/canvas/inspector/inspector.cpp \
@@ -98,6 +102,10 @@ SOURCES += \
 
 HEADERS += \
     src/ui/main_window.h \
+    src/ui/graph_window.h \
+    src/ui/view_window.h \
+    src/ui/quad_window.h \
+    src/ui/script_window.h \
     src/app/app.h \
     src/ui/canvas/canvas.h \
     src/ui/canvas/graph_scene.h \
