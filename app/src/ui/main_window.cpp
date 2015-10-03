@@ -22,8 +22,9 @@
 
 #include "control/proxy.h"
 
-MainWindow::MainWindow(QString type, QWidget *parent) :
-    QMainWindow(parent), window_type(type), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QString type, Node* n, QWidget *parent) :
+    QMainWindow(parent), window_type(type), ui(new Ui::MainWindow),
+    root(n)
 {
     ui->setupUi(this);
 
@@ -46,11 +47,22 @@ MainWindow::MainWindow(QString type, QWidget *parent) :
     // to always open scenes in height-map view.
     if (App::instance()->arguments().contains("--heightmap"))
         ui->actionHeightmap->setChecked(true);
+
+    if (root)
+        root->parentGraph()->installWatcher(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    if (root)
+        root->parentGraph()->uninstallWatcher(this);
+}
+
+void MainWindow::trigger(const GraphState& state)
+{
+    if (state.nodes.count(root) == 0)
+        close();
 }
 
 void MainWindow::connectActions(App* app)

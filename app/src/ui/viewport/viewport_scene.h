@@ -73,6 +73,10 @@ public:
      */
     bool loading;
 
+    /*  This is the graph used in this viewport scene.
+     */
+    Graph* const graph;
+
 public slots:
     void onGlowChange(Node* n, bool g);
 
@@ -88,10 +92,6 @@ protected:
      *  in the given QGraphicsScene.
      */
     void makeProxyFor(Control* c, Viewport* v);
-
-    /*  This is the graph used in this viewport scene.
-     */
-    Graph* const graph;
 
     /* Stores viewports for which we've made a QGraphicsScene */
     QSet<Viewport*> viewports;

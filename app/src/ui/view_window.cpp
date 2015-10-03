@@ -5,9 +5,11 @@
 #include "ui/viewport/viewport.h"
 
 #include "graph/node.h"
+#include "graph/graph_node.h"
+#include "graph/graph.h"
 
 ViewportWindow::ViewportWindow(Viewport* v)
-    : MainWindow("Viewport")
+    : MainWindow("Viewport", v->graph->parentNode())
 {
     setCentralWidget(v);
 

@@ -6,16 +6,13 @@
 class ScriptNode;
 class ScriptPane;
 
-class ScriptWindow : public MainWindow, GraphWatcher
+class ScriptWindow : public MainWindow
 {
 public:
     ScriptWindow(ScriptNode* n);
-    virtual ~ScriptWindow();
 
-    void trigger(const GraphState& state) override;
 protected slots:
     void openShapesLibrary() const;
 
-    Graph* graph;
     ScriptPane* pane;
 };

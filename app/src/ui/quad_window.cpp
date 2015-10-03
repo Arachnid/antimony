@@ -7,9 +7,11 @@
 #include "ui/util/colors.h"
 
 #include "graph/node.h"
+#include "graph/graph_node.h"
+#include "graph/graph.h"
 
 QuadWindow::QuadWindow(ViewportScene* scene)
-    : MainWindow("Quad")
+    : MainWindow("Quad", scene->graph->parentNode())
 {
     auto g = new QGridLayout();
 
