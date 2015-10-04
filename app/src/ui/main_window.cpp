@@ -65,6 +65,11 @@ void MainWindow::trigger(const GraphState& state)
         close();
 }
 
+void MainWindow::populateMenu(QMenu* menu, bool recenter, Viewport* v)
+{
+    Finder::populateMenu(menu, this, recenter, v);
+}
+
 void MainWindow::connectActions(App* app)
 {
     // File menu

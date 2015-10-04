@@ -30,7 +30,6 @@
 
 #include "graph/node/serializer.h"
 #include "graph/node/deserializer.h"
-#include "graph/node/finder.h"
 
 #include "control/control.h"
 #include "control/proxy.h"
@@ -395,8 +394,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent *event)
             QMenu* m = new QMenu(this);
 
             Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
-            auto window = static_cast<MainWindow*>(parent());
-            Finder::populateMenu(m, window, false);
+            static_cast<MainWindow*>(parent())->populateMenu(m, false);
 
             m->exec(QCursor::pos());
             m->deleteLater();
@@ -501,9 +499,9 @@ void Viewport::keyPressEvent(QKeyEvent *event)
                 while (!dynamic_cast<MainWindow*>(w))
                     w = w->parent();
                 Q_ASSERT(w);
+
                 QMenu* m = new QMenu(static_cast<MainWindow*>(w));
-                auto window = static_cast<MainWindow*>(w);
-                Finder::populateMenu(m, window, false, this);
+                static_cast<MainWindow*>(w)->populateMenu(m, false, this);
 
                 m->exec(QCursor::pos());
                 delete m;

@@ -40,6 +40,11 @@ public:
 
     void trigger(const GraphState& state) override;
 
+    /*
+     *  Populates a menu with node creation functions.
+     */
+    virtual void populateMenu(QMenu* menu, bool recenter, Viewport* v=NULL);
+
 protected:
     /*
      *  Connects menu actions to App slots.

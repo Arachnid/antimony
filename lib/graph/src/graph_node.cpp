@@ -50,4 +50,6 @@ PyObject* GraphNode::pyGetAttr(std::string n, Downstream* caller,
         return Proxy::makeProxyFor(subgraph.get(), caller, flags);
     else
         return Node::pyGetAttr(n, caller, flags);
+
+    return out;
 }

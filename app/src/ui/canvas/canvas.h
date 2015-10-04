@@ -37,6 +37,11 @@ public:
      */
     static void makeDatumAction(GraphNode* n, PyTypeObject* t, bool output);
 
+    /*
+     *  Fills the given menu with nodes.
+     */
+    void populateMenu(QMenu* menu);
+
     Graph* const graph;
     GraphScene* scene;
 

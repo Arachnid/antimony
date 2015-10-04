@@ -34,7 +34,6 @@
 
 #include "graph/node/serializer.h"
 #include "graph/node/deserializer.h"
-#include "graph/node/finder.h"
 
 Canvas::Canvas(Graph* graph, QWidget* parent)
     : QGraphicsView(parent), graph(graph), selecting(false)
@@ -61,20 +60,8 @@ void Canvas::makeDatumAction(GraphNode* node, PyTypeObject* type, bool output)
             NULL, "Datum name?", "Datum name:",
             QLineEdit::Normal, "x", &ok);
 
-    // Construct a default datum of the given type
-    auto obj = PyObject_CallObject((PyObject*)type, NULL);
-    Q_ASSERT(!PyErr_Occurred());
-
-    auto repr = PyObject_Repr(obj);
-    Q_ASSERT(!PyErr_Occurred());
-
     if (ok && !name.isEmpty())
-        node->makeDatum(
-                name.toStdString(), type,
-                std::string(PyUnicode_AsUTF8(repr)), output);
-
-    Py_DECREF(obj);
-    Py_DECREF(repr);
+        node->makeDatum(name.toStdString(), type, output);
 }
 
 void Canvas::populateDatumCommands(QMenu* menu, GraphNode* node)
@@ -97,6 +84,14 @@ void Canvas::populateDatumCommands(QMenu* menu, GraphNode* node)
     }
 }
 
+void Canvas::populateMenu(QMenu* menu)
+{
+    Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
+    static_cast<MainWindow*>(parent())->populateMenu(menu, false);
+    if (graph->parentNode())
+        populateDatumCommands(menu, graph->parentNode());
+}
+
 void Canvas::mousePressEvent(QMouseEvent* event)
 {
     QGraphicsView::mousePressEvent(event);
@@ -106,12 +101,7 @@ void Canvas::mousePressEvent(QMouseEvent* event)
             }
             else if (event->button() == Qt::RightButton) {
                 QMenu* m = new QMenu(this);
-
-                Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
-                auto window = static_cast<MainWindow*>(parent());
-                Finder::populateMenu(m, window, false);
-                if (graph->parentNode())
-                    populateDatumCommands(m, graph->parentNode());
+                populateMenu(m);
 
                 m->exec(QCursor::pos());
                 m->deleteLater();
@@ -176,10 +166,7 @@ void Canvas::keyPressEvent(QKeyEvent *event)
                 (event->modifiers() & Qt::ShiftModifier))
     {
         QMenu* m = new QMenu(this);
-
-        Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
-        auto window = static_cast<MainWindow*>(parent());
-        Finder::populateMenu(m, window, false);
+        populateMenu(m);
 
         m->exec(QCursor::pos());
         m->deleteLater();
