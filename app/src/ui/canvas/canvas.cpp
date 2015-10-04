@@ -57,11 +57,24 @@ Canvas::Canvas(Graph* graph, GraphScene* s, QWidget* parent)
 void Canvas::makeDatumAction(GraphNode* node, PyTypeObject* type, bool output)
 {
     bool ok;
-    QString text = QInputDialog::getText(
+    QString name = QInputDialog::getText(
             NULL, "Datum name?", "Datum name:",
             QLineEdit::Normal, "x", &ok);
-    if (ok && !text.isEmpty())
-        node->makeDatum(text.toStdString(), type, "0", output);
+
+    // Construct a default datum of the given type
+    auto obj = PyObject_CallObject((PyObject*)type, NULL);
+    Q_ASSERT(!PyErr_Occurred());
+
+    auto repr = PyObject_Repr(obj);
+    Q_ASSERT(!PyErr_Occurred());
+
+    if (ok && !name.isEmpty())
+        node->makeDatum(
+                name.toStdString(), type,
+                std::string(PyUnicode_AsUTF8(repr)), output);
+
+    Py_DECREF(obj);
+    Py_DECREF(repr);
 }
 
 void Canvas::populateDatumCommands(QMenu* menu, GraphNode* node)
