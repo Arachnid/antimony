@@ -1,6 +1,8 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
+#include <Python.h>
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QOpenGLShaderProgram>

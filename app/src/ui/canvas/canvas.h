@@ -1,6 +1,8 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+#include <Python.h>
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QPointer>

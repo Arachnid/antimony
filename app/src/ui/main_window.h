@@ -4,7 +4,6 @@
 #include <Python.h>
 #include <QMainWindow>
 
-#include "graph/node/constructor.h"
 #include "graph/watchers.h"
 
 class Canvas;
@@ -35,10 +34,6 @@ public:
     explicit MainWindow(QString type, Node* n, QWidget *parent=0);
     ~MainWindow();
 
-    /** Populate a menu with all of the widgets.
-     */
-    void populateMenu(QMenu* menu, bool recenter=true, Viewport* v=NULL);
-
     /** Returns True if the Shaded option is checked.
      */
     bool isShaded() const;
@@ -55,23 +50,6 @@ protected:
      *  (because Qt Designer doesn't have a good way to do so)
      */
     void setShortcuts();
-
-    /*
-     *  Makes a new object of the given class.
-     *
-     *  If recenter is true, snaps object to center of canvas or viewport
-     *  If v is given, use it as the viewport in which to add the object
-     *      (which enables Shift+A adding objects in quad windows)
-     */
-    void createNew(bool recenter, NodeConstructorFunction f, Viewport* v=NULL);
-
-    /** Adds a particular node to the "Add" menu.
-     */
-    void addNodeToMenu(QStringList category, QString name, QMenu* menu,
-                       bool recenter, NodeConstructorFunction f,
-                       Viewport* v=NULL);
-
-    void populateNodeMenu(QMenu* menu, bool recenter=true, Viewport* v=NULL);
 
     QString window_type;
     Ui::MainWindow *ui;

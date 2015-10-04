@@ -30,6 +30,7 @@
 
 #include "graph/node/serializer.h"
 #include "graph/node/deserializer.h"
+#include "graph/node/finder.h"
 
 Canvas::Canvas(Graph* graph, QWidget* parent)
     : QGraphicsView(parent), graph(graph), selecting(false)
@@ -61,7 +62,7 @@ void Canvas::mousePressEvent(QMouseEvent* event)
 
                 Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
                 auto window = static_cast<MainWindow*>(parent());
-                window->populateMenu(m, false);
+                Finder::populateMenu(m, window, false);
 
                 m->exec(QCursor::pos());
                 m->deleteLater();
@@ -129,7 +130,7 @@ void Canvas::keyPressEvent(QKeyEvent *event)
 
         Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
         auto window = static_cast<MainWindow*>(parent());
-        window->populateMenu(m, false);
+        Finder::populateMenu(m, window, false);
 
         m->exec(QCursor::pos());
         m->deleteLater();
