@@ -7,6 +7,7 @@
 #include <QMimeData>
 #include <QJsonDocument>
 #include <QPropertyAnimation>
+#include <QInputDialog>
 
 #include <cmath>
 
@@ -21,7 +22,10 @@
 
 #include "graph/node.h"
 #include "graph/graph.h"
+#include "graph/graph_node.h"
 #include "graph/datum.h"
+
+#include "fab/fab.h"
 
 #include "app/app.h"
 #include "app/undo/undo_add_node.h"
@@ -50,6 +54,36 @@ Canvas::Canvas(Graph* graph, GraphScene* s, QWidget* parent)
     scene = s;
 }
 
+void Canvas::makeDatumAction(GraphNode* node, PyTypeObject* type, bool output)
+{
+    bool ok;
+    QString text = QInputDialog::getText(
+            NULL, "Datum name?", "Datum name:",
+            QLineEdit::Normal, "x", &ok);
+    if (ok && !text.isEmpty())
+        node->makeDatum(text.toStdString(), type, "0", output);
+}
+
+void Canvas::populateDatumCommands(QMenu* menu, GraphNode* node)
+{
+    auto inputs = menu->addMenu("Input");
+    auto outputs = menu->addMenu("Output");
+
+    QList<QPair<QString, PyTypeObject*>> items =
+        {{"Float",  &PyFloat_Type},
+         {"Int",    &PyLong_Type},
+         {"String", &PyUnicode_Type},
+         {"Shape", fab::ShapeType}};
+
+    for (auto i : items)
+    {
+        inputs->connect(inputs->addAction(i.first), &QAction::triggered,
+            [=](){ makeDatumAction(node, i.second, false); });
+        outputs->connect(outputs->addAction(i.first), &QAction::triggered,
+            [=](){ makeDatumAction(node, i.second, true); });
+    }
+}
+
 void Canvas::mousePressEvent(QMouseEvent* event)
 {
     QGraphicsView::mousePressEvent(event);
@@ -63,6 +97,8 @@ void Canvas::mousePressEvent(QMouseEvent* event)
                 Q_ASSERT(dynamic_cast<MainWindow*>(parent()));
                 auto window = static_cast<MainWindow*>(parent());
                 Finder::populateMenu(m, window, false);
+                if (graph->parentNode())
+                    populateDatumCommands(m, graph->parentNode());
 
                 m->exec(QCursor::pos());
                 m->deleteLater();

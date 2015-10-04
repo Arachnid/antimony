@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QPointer>
+#include <QMenu>
 
 #include "graph/node/constructor.h"
 
@@ -25,6 +26,16 @@ public:
     void makeNodeAtCursor(NodeConstructorFunction f);
 
     NodeInspector* getNodeInspector(Node* n) const;
+
+    /*
+     *  Adds extra menu items that create input and output datums.
+     */
+    static void populateDatumCommands(QMenu* menu, GraphNode* g);
+
+    /*
+     *  Action called to create a new datum (only used in subgraphs)
+     */
+    static void makeDatumAction(GraphNode* n, PyTypeObject* t, bool output);
 
     Graph* const graph;
     GraphScene* scene;

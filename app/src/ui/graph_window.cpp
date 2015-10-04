@@ -16,6 +16,9 @@ GraphWindow::GraphWindow(Canvas* c)
     ui->menuView->deleteLater();
     ui->menuReference->deleteLater();
 
+    if (c->graph->parentNode())
+        c->populateDatumCommands(ui->menuAdd, c->graph->parentNode());
+
     connect(ui->actionCopy, &QAction::triggered,
             c, &Canvas::onCopy);
     connect(ui->actionCut, &QAction::triggered,
