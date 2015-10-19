@@ -53,3 +53,12 @@ PyObject* GraphNode::pyGetAttr(std::string n, Downstream* caller,
 
     return out;
 }
+
+PyObject* GraphNode::pyGetAttr(std::string n, Downstream* caller,
+                               uint8_t flags) const
+{
+    if (n == "__subgraph" && (flags & Proxy::FLAG_UID_LOOKUP))
+        return Proxy::makeProxyFor(subgraph.get(), caller, flags);
+    else
+        return Node::pyGetAttr(n, caller, flags);
+}
