@@ -132,8 +132,20 @@ Connection* GraphScene::makeLinkFrom(Datum* d)
 
 void GraphScene::makeLink(const Datum* source, InputPort* target)
 {
-    Q_ASSERT(inspectors.contains(source->parentNode()));
-    inspectors[source->parentNode()]->makeLink(source, target);
+    // If we have an inspector for this source, then make a link
+    if (inspectors.contains(source->parentNode()))
+    {
+        inspectors[source->parentNode()]->makeLink(source, target);
+    }
+    else if (auto g = dynamic_cast<GraphNode*>(target->getDatum()->parentNode()))
+    {
+        // Otherwise, the source is one level deep and we need to
+        // call makeLink in a popped contect (hopefully)
+        Q_ASSERT(subgraphs.contains(g));
+        subgraphs[g]->makeLink(source, target);
+    }
+    else
+        Q_ASSERT(false);
 }
 
 NodeInspector* GraphScene::getInspector(Node* node) const
