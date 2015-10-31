@@ -62,11 +62,13 @@ void GraphScene::trigger(const GraphState& state)
         Port* p = NULL;
         if (d->isOutput() && !outputs.contains(d))
         {
-            p = new InputPort(d, NULL);
+            outputs[d].reset(new InputPort(d, NULL));
+            p = outputs[d].data();
         }
         else if (!d->isOutput() && !inputs.contains(d))
         {
-            p = new OutputPort(d, NULL);
+            inputs[d].reset(new OutputPort(d, NULL));
+            p = inputs[d].data();
         }
 
         if (p)
@@ -117,7 +119,13 @@ void GraphScene::makeUIfor(Node* n)
 
 Connection* GraphScene::makeLinkFrom(Datum* d)
 {
-    auto c = new Connection(inspectors[d->parentNode()]->outputPort(d));
+    Connection* c;
+    if (inspectors.contains(d->parentNode()))
+        c = new Connection(inspectors[d->parentNode()]->outputPort(d));
+    else if (inputs.contains(d))
+        c = new Connection(inputs[d].data());
+    else
+        Q_ASSERT(false);
     addItem(c);
     return c;
 }

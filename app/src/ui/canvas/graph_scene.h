@@ -128,8 +128,8 @@ protected:
     QHash<Node*, QSharedPointer<NodeInspector>> inspectors;
     QHash<GraphNode*, QSharedPointer<GraphScene>> subgraphs;
 
-    QHash<Datum*, QSharedPointer<InputPort>> inputs;
-    QHash<Datum*, QSharedPointer<OutputPort>> outputs;
+    QHash<Datum*, QSharedPointer<OutputPort>> inputs;
+    QHash<Datum*, QSharedPointer<InputPort>> outputs;
 };
 
 #endif
