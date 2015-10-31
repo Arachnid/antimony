@@ -37,8 +37,15 @@ void GraphScene::trigger(const GraphState& state)
     for (auto n : state.nodes)
         nodes.insert(n);
 
+    QSet<Datum*> datums;
+    for (auto d : state.incoming)
+        datums.insert(d);
+
     pruneHash(nodes, &inspectors);
     pruneHash(nodes, &subgraphs);
+
+    pruneHash(datums, &inputs);
+    pruneHash(datums, &outputs);
 
     for (auto n : nodes)
     {
@@ -48,6 +55,24 @@ void GraphScene::trigger(const GraphState& state)
             if (!subgraphs.contains(gn))
                 subgraphs[gn].reset(new GraphScene(gn->getGraph()),
                                     &QObject::deleteLater);
+    }
+
+    for (auto d : datums)
+    {
+        Port* p = NULL;
+        if (d->isOutput() && !outputs.contains(d))
+        {
+            p = new InputPort(d, NULL);
+        }
+        else if (!d->isOutput() && !inputs.contains(d))
+        {
+            p = new OutputPort(d, NULL);
+        }
+
+        if (p)
+        {
+            addItem(p);
+        }
     }
 }
 

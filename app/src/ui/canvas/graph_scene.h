@@ -13,6 +13,7 @@ class Link;
 class Canvas;
 class NodeInspector;
 class InputPort;
+class OutputPort;
 class Connection;
 class ExportWorker;
 
@@ -123,8 +124,12 @@ protected:
 
     QHash<Node*, QString> title_cache;
     QHash<Node*, ExportWorker*> export_cache;
+
     QHash<Node*, QSharedPointer<NodeInspector>> inspectors;
     QHash<GraphNode*, QSharedPointer<GraphScene>> subgraphs;
+
+    QHash<Datum*, QSharedPointer<InputPort>> inputs;
+    QHash<Datum*, QSharedPointer<OutputPort>> outputs;
 };
 
 #endif
