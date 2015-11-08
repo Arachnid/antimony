@@ -37,11 +37,6 @@ public:
      */
     std::list<Node*> childNodes() const;
 
-     /*
-     *  Returns the parent node or NULL if this is a top-level graph.
-     */
-    GraphNode* parentNode() const { return parent; }
-
     /*
      *  Returns the parent node or NULL if this is a top-level graph.
      */
